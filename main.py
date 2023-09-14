@@ -4,9 +4,11 @@ import cv2
 import pyautogui
 import toml
 from mss import mss
+import numpy as np
 
 from config.definitions import CONFIG_PATH, DEFAULT_CONFIG, ROOT_DIR, assets_dir
 from pathlib import Path
+from typing import List
 
 
 def load_config(config_path: Path | str, default_config: str) -> dict:
@@ -40,16 +42,22 @@ if __name__ == "__main__":
     )
     print(f"Delay is set to {CONF['check_delay']} seconds")
     try:
+        # load templates and create grayscale image for each
         templates = [
-            cv2.imread(str(assets_dir / "template1.png")),
-            cv2.imread(str(assets_dir / "template2.png")),
-            cv2.imread(str(assets_dir / "template3.png")),
+            cv2.cvtColor(
+                cv2.imread(str(assets_dir / "template1.png")), cv2.COLOR_BGR2GRAY
+            ),
+            cv2.cvtColor(
+                cv2.imread(str(assets_dir / "template2.png")), cv2.COLOR_BGR2GRAY
+            ),
+            cv2.cvtColor(
+                cv2.imread(str(assets_dir / "template3.png")), cv2.COLOR_BGR2GRAY
+            ),
         ]
         with mss() as sct:
             while True:
                 for i in range(1, 4):
-                    template = templates[i - 1]
-                    template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
+                    template_gray = templates[i - 1]
                     screenshot = cv2.imread(sct.shot())
                     screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
                     res = cv2.matchTemplate(
