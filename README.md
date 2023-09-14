@@ -12,7 +12,7 @@ Just execute `NexusDownloadFlow 2023.exe` and open your NexusMods' download page
 
 The default delay for checking for the download button is 5 seconds. This value can be changed in `NexusDownloadFlow 2023/config.toml` by changing the `check_delay` value. It is not recommended to set this any lower than 1.
 
-## Auto clicker is not clicking
+## Auto-clicker is not clicking
 
 Do not worry, you have to replace the templates files where you installed NDF with the one you will screenshot:
 `NexusDownloadFlow 2023/assets/template{x}.png`
