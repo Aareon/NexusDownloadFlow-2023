@@ -5,30 +5,35 @@ import pyautogui
 import toml
 from mss import mss
 
-from config.definitions import (CONFIG_PATH, DEFAULT_CONFIG, ROOT_DIR,
-                                assets_dir)
+from config.definitions import CONFIG_PATH, DEFAULT_CONFIG, ROOT_DIR, assets_dir
+from pathlib import Path
 
-if __name__ == "__main__":
-    print("NexusDownloadFlow 2022 starting...")
-    if not CONFIG_PATH.exists():
+
+def load_config(config_path: Path | str, default_config: str) -> dict:
+    if not config_path.exists():
         print(f"Config not found, creating {CONFIG_PATH}")
         try:
-            with open(CONFIG_PATH, "w") as f:
-                f.write(DEFAULT_CONFIG)
+            with open(config_path, "w") as f:
+                f.write(default_config)
                 f.flush()
         except Exception as e:
             print(f"An error occurred saving default config to file: {e}")
         finally:
-            CONF = DEFAULT_CONFIG
+            return toml.loads(default_config)
     else:
         try:
-            CONF = toml.load(CONFIG_PATH)
+            return toml.load(config_path)
         except Exception as e:
             print(
                 f"An error occurred reading config file: {e}"
                 "Using default configuration."
             )
-            CONF = DEFAULT_CONFIG
+            return default_config
+
+
+if __name__ == "__main__":
+    print("NexusDownloadFlow 2022 starting...")
+    CONF = load_config(CONFIG_PATH, DEFAULT_CONFIG)
     print(
         "Do not forget to replace the assets templates (1, 2 & 3) "
         "in order to match with the screenshots taken from your monitor!"
