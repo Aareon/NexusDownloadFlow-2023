@@ -1,3 +1,4 @@
-PyAutoGUI~=0.9.53
-opencv-python~=4.5.5.64
-mss~=6.1.0
+PyAutoGUI==0.9.54
+opencv-python==4.5.5.64
+mss==6.1.0
+toml==0.10.2
