@@ -1,7 +1,12 @@
-import os
+from pathlib import Path
 
+ROOT_DIR = Path(__file__).parent.parent
 
-ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
-main_path = os.path.join(ROOT_DIR, 'main.py')
-assets_dir = os.path.join(ROOT_DIR, 'assets')
+main_path = ROOT_DIR / "main.py"
 
+assets_dir = ROOT_DIR / "assets"
+
+DEFAULT_CONFIG = """# NexusDownloadFlow-2023 Config
+check_delay = 5  # This is the check delay in seconds"""
+
+CONFIG_PATH = ROOT_DIR / "config.toml"
