@@ -1,12 +1,29 @@
+import sys
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).parent.parent
 
-main_path = ROOT_DIR / "main.py"
+def app_path(path):
+    if hasattr(sys, "frozen"):
+        # we are running in executable mode
+        # will return temp folder binary is unpacked to
+        app_dir = Path(sys._MEIPASS)
+    else:
+        # we are running in a normal Python environment
+        app_dir = Path(__file__).parent.parent
+    return app_dir.joinpath(path).resolve()
 
-assets_dir = ROOT_DIR / "assets"
+
+def real_path(path):
+    # a file relative to the binary that is not in temp folder
+    return Path(sys.argv[0]).parent.joinpath(path).resolve()
+
+
+CONFIG_PATH = real_path("./config/config.toml")
+
+ASSETS_PATH = app_path("assets/")  # default assets stored in temp
+REAL_ASSETS_PATH = real_path("./assets/")  # locally stored assets/templates
+
+SCREENSHOT_PATH = real_path("monitor-1.png")
 
 DEFAULT_CONFIG = """# NexusDownloadFlow-2023 Config
 check_delay = 5  # This is the check delay in seconds"""
-
-CONFIG_PATH = ROOT_DIR / "config.toml"

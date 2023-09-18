@@ -1,19 +1,26 @@
 import time
+from pathlib import Path
 
 import cv2
 import pyautogui
 import toml
 from mss import mss
-import numpy as np
+import sys
+import shutil
 
-from config.definitions import CONFIG_PATH, DEFAULT_CONFIG, ROOT_DIR, assets_dir
-from pathlib import Path
-from typing import List
+from config.definitions import (
+    ASSETS_PATH,
+    CONFIG_PATH,
+    DEFAULT_CONFIG,
+    SCREENSHOT_PATH,
+    REAL_ASSETS_PATH,
+)
 
 
 def load_config(config_path: Path | str, default_config: str) -> dict:
     if not config_path.exists():
         print(f"Config not found, creating {CONFIG_PATH}")
+        config_path.parent.mkdir(parents=True)
         try:
             with open(config_path, "w") as f:
                 f.write(default_config)
@@ -33,9 +40,31 @@ def load_config(config_path: Path | str, default_config: str) -> dict:
             return default_config
 
 
+def load_assets():
+    # if local assets folder does not exist
+    # create, move templates from temp, and return path to real assets folder
+    if not REAL_ASSETS_PATH.exists():
+        try:
+            print("Local assets folder does not exist. Copying templates...")
+            REAL_ASSETS_PATH.mkdir(parents=True)
+            # copy files from temp assets folder
+            files_to_copy = ASSETS_PATH.glob("*")
+            for f in files_to_copy:
+                if f.is_file():
+                    shutil.copy(f, REAL_ASSETS_PATH)
+            print("Done copying templates.")
+        except Exception as e:
+            print(f"Failed to create assets folder and copy templates: {e}")
+
+
 if __name__ == "__main__":
     print("NexusDownloadFlow 2022 starting...")
+    print(f"Config path: {CONFIG_PATH}")
+    print(f"Assets path: {ASSETS_PATH}")
+    print(f"Screenshot path: {SCREENSHOT_PATH}")
+    print("----------------------------------------------------------")
     CONF = load_config(CONFIG_PATH, DEFAULT_CONFIG)
+    load_assets()
     print(
         "Do not forget to replace the assets templates (1, 2 & 3) "
         "in order to match with the screenshots taken from your monitor!"
@@ -45,21 +74,25 @@ if __name__ == "__main__":
         # load templates and create grayscale image for each
         templates = [
             cv2.cvtColor(
-                cv2.imread(str(assets_dir / "template1.png")), cv2.COLOR_BGR2GRAY
+                cv2.imread(str(REAL_ASSETS_PATH / "template1.png")), cv2.COLOR_BGR2GRAY
             ),
             cv2.cvtColor(
-                cv2.imread(str(assets_dir / "template2.png")), cv2.COLOR_BGR2GRAY
+                cv2.imread(str(REAL_ASSETS_PATH / "template2.png")), cv2.COLOR_BGR2GRAY
             ),
             cv2.cvtColor(
-                cv2.imread(str(assets_dir / "template3.png")), cv2.COLOR_BGR2GRAY
+                cv2.imread(str(REAL_ASSETS_PATH / "template3.png")), cv2.COLOR_BGR2GRAY
             ),
         ]
         with mss() as sct:
             while True:
                 for i in range(1, 4):
                     template_gray = templates[i - 1]
-                    screenshot = cv2.imread(sct.shot())
-                    screenshot_gray = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+                    screenshot = cv2.imread(
+                        sct.shot()
+                    )  # take screenshot/convert to opencv image
+                    screenshot_gray = cv2.cvtColor(
+                        screenshot, cv2.COLOR_BGR2GRAY
+                    )  # grayscale screenshot
                     res = cv2.matchTemplate(
                         screenshot_gray, template_gray, cv2.TM_SQDIFF
                     )
@@ -74,15 +107,18 @@ if __name__ == "__main__":
                         )
                         pyautogui.leftClick(target)
                         break
+                if SCREENSHOT_PATH.exists():
+                    SCREENSHOT_PATH.unlink()
                 time.sleep(CONF["check_delay"])
     except SystemExit:
         print("Exiting the program...")
-        raise
+    except KeyboardInterrupt:
+        print("Exiting the program...")
     finally:
         time.sleep(CONF["check_delay"])
-        monitor_img_fp = ROOT_DIR / "monitor-1.png"
-        if monitor_img_fp.exists():
-            monitor_img_fp.unlink()
+        if SCREENSHOT_PATH.exists():
+            SCREENSHOT_PATH.unlink()
         else:
-            print("The monitor_img_fp does not exist")
-        print("Program ended")
+            print("The screenshot does not exist")
+        print("Done")
+        sys.exit(0)

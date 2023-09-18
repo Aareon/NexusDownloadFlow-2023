@@ -147,3 +147,6 @@ monitor-1.png
 # configuration file
 config.toml
 
+# dist/build for installer/EXE
+*.build/
+*.dist/
