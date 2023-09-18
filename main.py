@@ -1,3 +1,5 @@
+import shutil
+import sys
 import time
 from pathlib import Path
 
@@ -5,16 +7,9 @@ import cv2
 import pyautogui
 import toml
 from mss import mss
-import sys
-import shutil
 
-from config.definitions import (
-    ASSETS_PATH,
-    CONFIG_PATH,
-    DEFAULT_CONFIG,
-    SCREENSHOT_PATH,
-    REAL_ASSETS_PATH,
-)
+from config.definitions import (ASSETS_PATH, CONFIG_PATH, DEFAULT_CONFIG,
+                                REAL_ASSETS_PATH, SCREENSHOT_PATH)
 
 
 def load_config(config_path: Path | str, default_config: str) -> dict:
