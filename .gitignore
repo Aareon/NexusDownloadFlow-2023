@@ -150,3 +150,6 @@ config.toml
 # dist/build for installer/EXE
 *.build/
 *.dist/
+
+wj.py
+modlist.json
