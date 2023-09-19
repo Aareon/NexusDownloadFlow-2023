@@ -8,11 +8,16 @@ import pyautogui
 import toml
 from mss import mss
 
-from config.definitions import (ASSETS_PATH, CONFIG_PATH, DEFAULT_CONFIG,
-                                REAL_ASSETS_PATH, SCREENSHOT_PATH)
+from config.definitions import (
+    ASSETS_PATH,
+    CONFIG_PATH,
+    DEFAULT_CONFIG,
+    REAL_ASSETS_PATH,
+    SCREENSHOT_PATH,
+)
 
 
-def load_config(config_path: Path | str, default_config: str) -> dict:
+def load_config(config_path: Path, default_config: str) -> dict:
     if not config_path.exists():
         print(f"Config not found, creating {CONFIG_PATH}")
         config_path.parent.mkdir(parents=True)
@@ -52,63 +57,71 @@ def load_assets():
             print(f"Failed to create assets folder and copy templates: {e}")
 
 
+def run_autoclicker(cli_mode=True):
+    # load templates and create grayscale image for each
+    templates = [
+        cv2.cvtColor(
+            cv2.imread(str(REAL_ASSETS_PATH / "template1.png")), cv2.COLOR_BGR2GRAY
+        ),
+        cv2.cvtColor(
+            cv2.imread(str(REAL_ASSETS_PATH / "template2.png")), cv2.COLOR_BGR2GRAY
+        ),
+        cv2.cvtColor(
+            cv2.imread(str(REAL_ASSETS_PATH / "template3.png")), cv2.COLOR_BGR2GRAY
+        ),
+    ]
+    with mss() as sct:
+        match_count = 0  # counter for template matches
+        while True:
+            for i in range(1, 4):
+                template_gray = templates[i - 1]
+                screenshot = cv2.imread(
+                    sct.shot()
+                )  # take screenshot/convert to opencv image
+                screenshot_gray = cv2.cvtColor(
+                    screenshot, cv2.COLOR_BGR2GRAY
+                )  # grayscale screenshot
+                res = cv2.matchTemplate(
+                    screenshot_gray, template_gray, cv2.TM_SQDIFF
+                )
+                min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+                threshold = 3000
+                if min_val < threshold:
+                    match_count += 1
+                    print(f"\r[{match_count}] Download found!", end="")
+                    top_left = min_loc
+                    target = (
+                        top_left[0] + template_gray.shape[1] / 2,
+                        top_left[1] + template_gray.shape[0] / 2,
+                    )
+                    pyautogui.leftClick(target)
+                    break
+            if SCREENSHOT_PATH.exists():
+                SCREENSHOT_PATH.unlink()  # delete screenshot image from filesystem
+            time.sleep(CONF["check_delay"])
+
+
 if __name__ == "__main__":
+    sep = "-" * 64
     print("NexusDownloadFlow 2022 starting...")
+    print(sep)
     print(f"Config path: {CONFIG_PATH}")
     print(f"Assets path: {ASSETS_PATH}")
     print(f"Screenshot path: {SCREENSHOT_PATH}")
-    print("----------------------------------------------------------")
+    print(sep)
     CONF = load_config(CONFIG_PATH, DEFAULT_CONFIG)
     load_assets()
     print(
         "Do not forget to replace the assets templates (1, 2 & 3) "
         "in order to match with the screenshots taken from your monitor!"
     )
-    print(f"Delay is set to {CONF['check_delay']} seconds")
+    print(f"Delay is set to {CONF['check_delay']} second(s)")
     try:
-        # load templates and create grayscale image for each
-        templates = [
-            cv2.cvtColor(
-                cv2.imread(str(REAL_ASSETS_PATH / "template1.png")), cv2.COLOR_BGR2GRAY
-            ),
-            cv2.cvtColor(
-                cv2.imread(str(REAL_ASSETS_PATH / "template2.png")), cv2.COLOR_BGR2GRAY
-            ),
-            cv2.cvtColor(
-                cv2.imread(str(REAL_ASSETS_PATH / "template3.png")), cv2.COLOR_BGR2GRAY
-            ),
-        ]
-        with mss() as sct:
-            while True:
-                for i in range(1, 4):
-                    template_gray = templates[i - 1]
-                    screenshot = cv2.imread(
-                        sct.shot()
-                    )  # take screenshot/convert to opencv image
-                    screenshot_gray = cv2.cvtColor(
-                        screenshot, cv2.COLOR_BGR2GRAY
-                    )  # grayscale screenshot
-                    res = cv2.matchTemplate(
-                        screenshot_gray, template_gray, cv2.TM_SQDIFF
-                    )
-                    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-                    threshold = 3000
-                    if min_val < threshold:
-                        print("Matching template!")
-                        top_left = min_loc
-                        target = (
-                            top_left[0] + template_gray.shape[1] / 2,
-                            top_left[1] + template_gray.shape[0] / 2,
-                        )
-                        pyautogui.leftClick(target)
-                        break
-                if SCREENSHOT_PATH.exists():
-                    SCREENSHOT_PATH.unlink()
-                time.sleep(CONF["check_delay"])
+        run_autoclicker()
     except SystemExit:
-        print("Exiting the program...")
+        print("\nExiting the program...")
     except KeyboardInterrupt:
-        print("Exiting the program...")
+        print("\nExiting the program...")
     finally:
         time.sleep(CONF["check_delay"])
         if SCREENSHOT_PATH.exists():
