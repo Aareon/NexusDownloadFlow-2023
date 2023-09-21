@@ -81,20 +81,23 @@ def run_autoclicker(cli_mode=True):
                 screenshot_gray = cv2.cvtColor(
                     screenshot, cv2.COLOR_BGR2GRAY
                 )  # grayscale screenshot
-                res = cv2.matchTemplate(
-                    screenshot_gray, template_gray, cv2.TM_SQDIFF
-                )
-                min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+                res = cv2.matchTemplate(screenshot_gray, template_gray, cv2.TM_SQDIFF)
+                min_val, _, min_loc, _ = cv2.minMaxLoc(res)
                 threshold = 3000
                 if min_val < threshold:
                     match_count += 1
-                    print(f"\r[{match_count}] Download found!", end="")
+                    if cli_mode:
+                        print(f"\r[{match_count}] Download button found!", end="")
                     top_left = min_loc
                     target = (
                         top_left[0] + template_gray.shape[1] / 2,
                         top_left[1] + template_gray.shape[0] / 2,
                     )
-                    pyautogui.leftClick(target)
+                    orig_pos = pyautogui.position()  # original mouse position
+                    pyautogui.leftClick(target)  # click the detected download button
+                    pyautogui.moveTo(
+                        orig_pos
+                    )  # move mouse back to where it was originally
                     break
             if SCREENSHOT_PATH.exists():
                 SCREENSHOT_PATH.unlink()  # delete screenshot image from filesystem
@@ -102,13 +105,25 @@ def run_autoclicker(cli_mode=True):
 
 
 if __name__ == "__main__":
-    sep = "-" * 64
-    print("NexusDownloadFlow 2022 starting...")
-    print(sep)
-    print(f"Config path: {CONFIG_PATH}")
-    print(f"Assets path: {ASSETS_PATH}")
-    print(f"Screenshot path: {SCREENSHOT_PATH}")
-    print(sep)
+    sep = "━" * max(
+        [
+            len(str(CONFIG_PATH)) + 13,
+            len(str(ASSETS_PATH)) + 13,
+            len(str(SCREENSHOT_PATH)) + 17,
+        ]
+    )
+    print("NexusDownloadFlow-2023 starting...")
+    print(f"┏{sep}┓")
+    print(
+        f"┃Config path: {CONFIG_PATH}{' ' * (len(sep) - len(str(CONFIG_PATH)) - 13)}┃"
+    )
+    print(
+        f"┃Assets path: {ASSETS_PATH}{' ' * (len(sep) - len(str(ASSETS_PATH)) - 13)}┃"
+    )
+    print(
+        f"┃Screenshot path: {SCREENSHOT_PATH}{' ' * (len(sep) - len(str(SCREENSHOT_PATH)) - 17)}┃"
+    )
+    print(f"┗{sep}┛")
     CONF = load_config(CONFIG_PATH, DEFAULT_CONFIG)
     load_assets()
     print(
@@ -118,12 +133,18 @@ if __name__ == "__main__":
     print(f"Delay is set to {CONF['check_delay']} second(s)")
     try:
         run_autoclicker()
-    except SystemExit:
+    except (SystemExit, KeyboardInterrupt):
         print("\nExiting the program...")
-    except KeyboardInterrupt:
-        print("\nExiting the program...")
+    except (PermissionError, WindowsError):
+        print(
+            "\nCould not create/delete 'monitor-1.png' due to a permission error. "
+            "This can happen when your computer goes to sleep, "
+            "or the folder you installed to requires elevated priveleges."
+        )
+    except Exception as e:
+        print("\nUnexpected exception " f"{type(e)}: {e}")
     finally:
-        time.sleep(CONF["check_delay"])
+        time.sleep(0.1)
         if SCREENSHOT_PATH.exists():
             SCREENSHOT_PATH.unlink()
         else:
