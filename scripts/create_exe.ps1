@@ -3,7 +3,7 @@ $programName = "NexusDownloadFlow-2023"
 $scriptPath = $PSScriptRoot
 
 # Set the path to your spec file (modify as needed)
-$specFilePath = Resolve-Path -Path (Join-Path -Path $scriptPath -ChildPath "../$programName.spec")
+$specFilePath = Resolve-Path -Path (Join-Path -Path $scriptPath -ChildPath "../build.spec")
 
 Write-Host "Spec path: $specFilePath"
 
