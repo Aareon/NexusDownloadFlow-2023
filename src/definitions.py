@@ -26,7 +26,7 @@ CONFIG_PATH = real_path("../config/config.toml")
 
 ASSETS_PATH = app_path("assets/")  # default assets stored in temp
 REAL_ASSETS_PATH = real_path(
-    "./assets/"
+    "../assets/"
 )  # locally stored assets/templates (install dir)
 
 SCREENSHOT_PATH = real_path("../monitor-1.png")
