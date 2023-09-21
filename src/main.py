@@ -8,7 +8,7 @@ import pyautogui
 import toml
 from mss import mss
 
-from config.definitions import (
+from definitions import (
     ASSETS_PATH,
     CONFIG_PATH,
     DEFAULT_CONFIG,

@@ -22,14 +22,14 @@ def real_path(path):
     return Path(sys.argv[0]).parent.joinpath(path).resolve()
 
 
-CONFIG_PATH = real_path("./config/config.toml")
+CONFIG_PATH = real_path("../config/config.toml")
 
 ASSETS_PATH = app_path("assets/")  # default assets stored in temp
 REAL_ASSETS_PATH = real_path(
     "./assets/"
 )  # locally stored assets/templates (install dir)
 
-SCREENSHOT_PATH = real_path("monitor-1.png")
+SCREENSHOT_PATH = real_path("../monitor-1.png")
 
 DEFAULT_CONFIG = """# NexusDownloadFlow-2023 Config
 check_delay = 5  # This is the check delay in seconds
