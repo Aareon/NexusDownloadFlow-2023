@@ -1,6 +1,6 @@
 [project]
 name = "nexusdownloadflow"
-version = "1.1.0"
+version = "1.1.1"
 description = "Auto-clicker for Nexus download flow using computer vision"
 readme = "README.md"
 requires-python = ">=3.14,<3.15"

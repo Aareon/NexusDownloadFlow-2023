@@ -28,6 +28,7 @@ ASSETS_PATH = app_path("assets/")  # default assets stored in temp
 REAL_ASSETS_PATH = real_path("assets/")  # locally stored assets/templates
 
 SCREENSHOT_PATH = real_path("monitor-1.png")
+LOG_FILE_PATH = real_path("logs/nexusdownloadflow.log")
 
 DEFAULT_CONFIG = """# NexusDownloadFlow Config
 check_delay = 5  # This is the check delay in seconds

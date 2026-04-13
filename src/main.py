@@ -13,6 +13,7 @@ from src.definitions import (
     ASSETS_PATH,
     CONFIG_PATH,
     DEFAULT_CONFIG,
+    LOG_FILE_PATH,
     REAL_ASSETS_PATH,
     SCREENSHOT_PATH,
 )
@@ -54,7 +55,7 @@ def resolve_log_level(args: argparse.Namespace, conf) -> str:
 def main() -> None:
     """Initialize runtime resources and start the auto-clicker loop."""
     args = parse_args()
-    configure_logging("INFO")
+    configure_logging("INFO", LOG_FILE_PATH)
     sep = "━" * max(
         [
             len(str(CONFIG_PATH)) + 13,
@@ -75,7 +76,7 @@ def main() -> None:
     )
     logger.info(f"┗{sep}┛")
     CONF = load_config(CONFIG_PATH, DEFAULT_CONFIG)
-    configure_logging(resolve_log_level(args, CONF))
+    configure_logging(resolve_log_level(args, CONF), LOG_FILE_PATH)
 
     logger.debug("Effective runtime config: {}", CONF.model_dump())
     load_assets(ASSETS_PATH, REAL_ASSETS_PATH)

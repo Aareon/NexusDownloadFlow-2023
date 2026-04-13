@@ -6,7 +6,6 @@ Runs lock, lint, tests, and packaging in sequence using uv.
 from __future__ import annotations
 
 import subprocess
-import sys
 from pathlib import Path
 
 PYTHON_VERSION = "3.14"
