@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Any
 
 import cv2
-import pyautogui
 from loguru import logger
 from mss import mss
 from numpy.typing import NDArray
@@ -80,6 +79,9 @@ def find_template_target(
 
 def click_and_restore_cursor(target: tuple[float, float]) -> None:
     """Click the matched target and restore cursor to its previous position."""
+    # Import lazily so headless CI test environments can import this module.
+    import pyautogui
+
     orig_pos = pyautogui.position()
     pyautogui.leftClick(target)
     pyautogui.moveTo(orig_pos)
