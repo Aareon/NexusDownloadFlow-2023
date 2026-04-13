@@ -1,10 +1,11 @@
-"""Auto-clicker automation for NexusDownloadFlow-2023."""
+"""Auto-clicker automation for NexusDownloadFlow-2026."""
 
 import time
 from pathlib import Path
 
 import cv2
 import pyautogui
+from loguru import logger
 from mss import mss
 
 
@@ -53,7 +54,7 @@ def run_autoclicker(conf: dict, real_assets_path: Path, screenshot_path: Path, c
                 if min_val < threshold:
                     match_count += 1
                     if cli_mode:
-                        print(f"\r[{match_count}] Download button found!", end="")
+                        logger.info("Download button found (match #{})", match_count)
                     top_left = min_loc
                     target = (
                         top_left[0] + template_gray.shape[1] / 2,

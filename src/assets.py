@@ -1,7 +1,9 @@
-"""Asset and template loading for NexusDownloadFlow-2023."""
+"""Asset and template loading for NexusDownloadFlow-2026."""
 
 import shutil
 from pathlib import Path
+
+from loguru import logger
 
 
 def load_assets(assets_path: Path, real_assets_path: Path) -> None:
@@ -28,12 +30,11 @@ def load_assets(assets_path: Path, real_assets_path: Path) -> None:
         if not missing_templates:
             return
 
-        print("Local assets are missing templates. Copying templates...")
+        logger.info("Local assets are missing templates. Copying templates...")
         if not assets_path.exists():
-            print(
-                "Bundled assets folder is missing. "
-                "Place template1.png, template2.png, and template3.png "
-                f"in {real_assets_path}."
+            logger.warning(
+                "Bundled assets folder is missing. Place template1.png, template2.png, and template3.png in {}.",
+                real_assets_path,
             )
             return
 
@@ -48,11 +49,11 @@ def load_assets(assets_path: Path, real_assets_path: Path) -> None:
             if not (real_assets_path / name).exists()
         ]
         if still_missing:
-            print(
-                "Some templates are still missing after copy attempt: "
-                f"{', '.join(still_missing)}"
+            logger.warning(
+                "Some templates are still missing after copy attempt: {}",
+                ", ".join(still_missing),
             )
         else:
-            print("Done copying templates.")
+            logger.info("Done copying templates.")
     except Exception as e:
-        print(f"Failed to create assets folder and copy templates: {e}")
+        logger.exception("Failed to create assets folder and copy templates: {}", e)

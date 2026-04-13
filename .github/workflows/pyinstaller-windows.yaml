@@ -33,6 +33,6 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: NexusDownloadFlow-2023-windows
+        name: NexusDownloadFlow-2026-windows
         path: dist/**
         if-no-files-found: error

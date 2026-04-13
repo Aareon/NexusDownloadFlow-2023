@@ -1,8 +1,9 @@
-"""Configuration loading and management for NexusDownloadFlow-2023."""
+"""Configuration loading and management for NexusDownloadFlow-2026."""
 
 from pathlib import Path
 
 import toml
+from loguru import logger
 
 
 def load_config(config_path: Path, default_config: str) -> dict:
@@ -17,21 +18,18 @@ def load_config(config_path: Path, default_config: str) -> dict:
 
     """
     if not config_path.exists():
-        print(f"Config not found, creating {config_path}")
+        logger.warning("Config not found, creating {}", config_path)
         config_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             with open(config_path, "w") as f:
                 f.write(default_config)
                 f.flush()
         except Exception as e:
-            print(f"An error occurred saving default config to file: {e}")
+            logger.exception("Error saving default config file: {}", e)
         return toml.loads(default_config)
     else:
         try:
             return toml.load(config_path)
         except Exception as e:
-            print(
-                f"An error occurred reading config file: {e}. "
-                "Using default configuration."
-            )
+            logger.exception("Error reading config file ({}). Using default configuration.", e)
             return toml.loads(default_config)

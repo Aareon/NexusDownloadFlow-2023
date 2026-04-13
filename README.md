@@ -1,12 +1,12 @@
-# NexusDownloadFlow-2023: Auto-clicker script using computer vision
+# NexusDownloadFlow-2026: Auto-clicker script using computer vision
 
-NexusDownloadFlow-2023 (NDF) is a script that takes screenshots and detects if any template matches with the
+NexusDownloadFlow-2026 (NDF) is a script that takes screenshots and detects if any template matches with the
 screenshot taken. It was made to automate process with `Wabbajack modlist installation of Nexus' mods` in which
 you have to manually click on `Slow download` button is your NexusMods account is not premium.
 
-## How to use NexusDownloadFlow-2023?
+## How to use NexusDownloadFlow-2026?
 
-Just execute `NexusDownloadFlow-2023.exe` and open your NexusMods' download page.
+Just execute `NexusDownloadFlow-2026.exe` and open your NexusMods' download page.
 
 ## Configuration
 
@@ -15,7 +15,7 @@ The default delay for checking for the download button is 5 seconds. This value 
 ## Auto-clicker is not clicking
 
 Do not worry, you have to replace the templates files where you installed NDF with the one you will screenshot:
-`NexusDownloadFlow-2023/assets/template{x}.png`
+`NexusDownloadFlow-2026assets/template{x}.png`
 
 + `template1.png` is the raw `Slow download` button
 + `template2.png` is the `Slow download` button with mouse hovering over
