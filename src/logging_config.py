@@ -12,6 +12,7 @@ def configure_logging(level: str = "INFO", log_file_path: Path | None = None) ->
     Args:
         level: Log level name such as INFO, DEBUG, or WARNING.
         log_file_path: Optional file path for persistent log output.
+            File logs always persist WARNING and ERROR regardless of console level.
     """
     logger.remove()
     logger.add(
@@ -25,7 +26,7 @@ def configure_logging(level: str = "INFO", log_file_path: Path | None = None) ->
         log_file_path.parent.mkdir(parents=True, exist_ok=True)
         logger.add(
             str(log_file_path),
-            level=level,
+            level="WARNING",
             format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {message}",
             rotation="5 MB",
             retention="10 days",

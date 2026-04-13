@@ -37,7 +37,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='NexusDownloadFlow-v1.1.1',
+    name='NexusDownloadFlow-v1.1.2',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
