@@ -41,12 +41,21 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         shell: pwsh
         run: |
-          $tag = "${{ inputs.tag_name }}"
+          $tag = "${{ inputs.tag_name }}".Trim()
+          if ([string]::IsNullOrWhiteSpace($tag)) {
+            throw "tag_name cannot be empty"
+          }
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          if (-not (git rev-parse "$tag" 2>$null)) {
+
+          $existingTag = git tag --list "$tag"
+          if (-not $existingTag) {
             git tag "$tag"
-            git push origin "$tag"
+            git push origin "refs/tags/$tag"
+            Write-Host "Created and pushed tag: $tag"
+          } else {
+            Write-Host "Tag already exists: $tag"
           }
 
       - name: Set up uv
