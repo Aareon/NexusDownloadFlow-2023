@@ -4,6 +4,7 @@
 ![uv](https://img.shields.io/badge/uv-managed-4B8BBE)
 [![Ruff Lint Workflow](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/ruff-lint.yaml/badge.svg)](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/ruff-lint.yaml)
 [![Pytest Workflow](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/pytest.yaml/badge.svg)](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/pytest.yaml)
+[![codecov](https://codecov.io/gh/Aareon/NexusDownloadFlow/branch/main/graph/badge.svg)](https://codecov.io/gh/Aareon/NexusDownloadFlow)
 [![Packaging Workflow](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/pyinstaller-windows.yaml/badge.svg)](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/pyinstaller-windows.yaml)
 
 NexusDownloadFlow (NDF) is a script that takes screenshots and detects if any template matches with the
