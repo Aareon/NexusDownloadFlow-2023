@@ -13,6 +13,8 @@ class AppConfig(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     check_delay: float = Field(default=5.0, ge=0.1)
+    verbose: bool = False
+    debug: bool = False
     prevent_sleep: bool = True
     stop_after: str = "1h"
 

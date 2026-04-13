@@ -31,5 +31,7 @@ SCREENSHOT_PATH = real_path("monitor-1.png")
 
 DEFAULT_CONFIG = """# NexusDownloadFlow-2026 Config
 check_delay = 5  # This is the check delay in seconds
+verbose = false  # enable verbose logging
+debug = false  # enable debug logging (most detailed)
 prevent_sleep = true  # prevent computer from entering sleep or turning off display
 stop_after = "1h"  # accepts `0` to disable, otherwise use `m` (minutes), `h` (hours). Example: 12m"""

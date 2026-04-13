@@ -1,5 +1,6 @@
 """Application entrypoint for NexusDownloadFlow-2026."""
 
+import argparse
 import sys
 import time
 
@@ -18,9 +19,42 @@ from src.definitions import (
 from src.logging_config import configure_logging
 
 
+def parse_args() -> argparse.Namespace:
+    """Parse command-line arguments for runtime logging controls."""
+    parser = argparse.ArgumentParser(description="NexusDownloadFlow-2026")
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Enable verbose logging (INFO level).",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug logging (DEBUG level).",
+    )
+    return parser.parse_args()
+
+
+def resolve_log_level(args: argparse.Namespace, conf) -> str:
+    """Resolve effective log level using CLI flags and config.
+
+    CLI flags take precedence over config values.
+    """
+    if args.debug:
+        return "DEBUG"
+    if args.verbose:
+        return "INFO"
+    if conf.debug:
+        return "DEBUG"
+    if conf.verbose:
+        return "INFO"
+    return "WARNING"
+
+
 def main() -> None:
     """Initialize runtime resources and start the auto-clicker loop."""
-    configure_logging()
+    args = parse_args()
+    configure_logging("INFO")
     sep = "━" * max(
         [
             len(str(CONFIG_PATH)) + 13,
@@ -41,6 +75,9 @@ def main() -> None:
     )
     logger.info(f"┗{sep}┛")
     CONF = load_config(CONFIG_PATH, DEFAULT_CONFIG)
+    configure_logging(resolve_log_level(args, CONF))
+
+    logger.debug("Effective runtime config: {}", CONF.model_dump())
     load_assets(ASSETS_PATH, REAL_ASSETS_PATH)
     logger.info(
         "Do not forget to replace the assets templates (1, 2 & 3) "

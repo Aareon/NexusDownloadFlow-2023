@@ -34,6 +34,7 @@ def load_template_images(real_assets_path: Path) -> list[NDArray[Any]]:
                 f"Template could not be loaded: {template_path}. "
                 "Ensure template files exist and are valid PNG images."
             )
+        logger.debug("Loaded template: {}", template_path)
         templates.append(cv2.cvtColor(template_img, cv2.COLOR_BGR2GRAY))
     return templates
 
@@ -60,6 +61,7 @@ def find_template_target(
     """
     result = cv2.matchTemplate(screenshot_gray, template_gray, cv2.TM_SQDIFF)
     min_val, _, min_loc, _ = cv2.minMaxLoc(result)
+    logger.debug("Template match min value: {}", min_val)
     if min_val >= MATCH_THRESHOLD:
         return None
 
@@ -114,6 +116,7 @@ def run_autoclicker(
     with mss() as sct:
         match_count = 0
         while True:
+            logger.debug("Starting matching iteration")
             screenshot_gray = take_screenshot_gray(sct)
             for template_gray in templates:
                 target = find_template_target(screenshot_gray, template_gray)
