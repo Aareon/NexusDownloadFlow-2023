@@ -39,9 +39,11 @@ def load_template_images(real_assets_path: Path) -> list[NDArray[Any]]:
     return templates
 
 
-def take_screenshot_gray(sct: mss) -> NDArray[Any]:
-    """Capture a screenshot and convert it to grayscale image array."""
-    screenshot = cv2.imread(sct.shot())
+def take_screenshot_gray(sct: mss, screenshot_path: Path) -> NDArray[Any]:
+    """Capture a screenshot to a known path and convert it to grayscale."""
+    screenshot_path.parent.mkdir(parents=True, exist_ok=True)
+    screenshot_file = sct.shot(output=str(screenshot_path))
+    screenshot = cv2.imread(screenshot_file)
     if screenshot is None:
         raise RuntimeError("Failed to capture screenshot for template matching.")
     return cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
@@ -117,7 +119,7 @@ def run_autoclicker(
         match_count = 0
         while True:
             logger.debug("Starting matching iteration")
-            screenshot_gray = take_screenshot_gray(sct)
+            screenshot_gray = take_screenshot_gray(sct, screenshot_path)
             for template_gray in templates:
                 target = find_template_target(screenshot_gray, template_gray)
                 if target is not None:
