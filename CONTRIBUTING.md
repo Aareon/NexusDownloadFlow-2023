@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing to NexusDownloadFlow-2026.
+Thanks for contributing to NexusDownloadFlow.
 
 ## Setup
 

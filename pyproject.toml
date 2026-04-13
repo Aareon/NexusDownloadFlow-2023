@@ -1,5 +1,5 @@
 [project]
-name = "nexusdownloadflow-2026"
+name = "nexusdownloadflow"
 version = "1.0.3"
 description = "Auto-clicker for Nexus download flow using computer vision"
 readme = "README.md"

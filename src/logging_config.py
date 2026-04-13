@@ -1,4 +1,4 @@
-"""Centralized logging configuration for NexusDownloadFlow-2026."""
+"""Centralized logging configuration for NexusDownloadFlow."""
 
 import sys
 

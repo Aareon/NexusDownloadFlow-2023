@@ -1,4 +1,4 @@
-"""Asset and template loading for NexusDownloadFlow-2026."""
+"""Asset and template loading for NexusDownloadFlow."""
 
 import shutil
 from pathlib import Path

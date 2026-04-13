@@ -1,4 +1,4 @@
-"""Configuration loading and management for NexusDownloadFlow-2026."""
+"""Configuration loading and management for NexusDownloadFlow."""
 
 from pathlib import Path
 

@@ -1,4 +1,4 @@
-"""Auto-clicker automation for NexusDownloadFlow-2026."""
+"""Auto-clicker automation for NexusDownloadFlow."""
 
 import time
 from pathlib import Path

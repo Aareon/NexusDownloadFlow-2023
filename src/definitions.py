@@ -29,7 +29,7 @@ REAL_ASSETS_PATH = real_path("assets/")  # locally stored assets/templates
 
 SCREENSHOT_PATH = real_path("monitor-1.png")
 
-DEFAULT_CONFIG = """# NexusDownloadFlow-2026 Config
+DEFAULT_CONFIG = """# NexusDownloadFlow Config
 check_delay = 5  # This is the check delay in seconds
 verbose = false  # enable verbose logging
 debug = false  # enable debug logging (most detailed)

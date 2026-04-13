@@ -1,4 +1,4 @@
-"""Application entrypoint for NexusDownloadFlow-2026."""
+"""Application entrypoint for NexusDownloadFlow."""
 
 import argparse
 import sys
@@ -21,7 +21,7 @@ from src.logging_config import configure_logging
 
 def parse_args() -> argparse.Namespace:
     """Parse command-line arguments for runtime logging controls."""
-    parser = argparse.ArgumentParser(description="NexusDownloadFlow-2026")
+    parser = argparse.ArgumentParser(description="NexusDownloadFlow")
     parser.add_argument(
         "--verbose",
         action="store_true",
@@ -62,7 +62,7 @@ def main() -> None:
             len(str(SCREENSHOT_PATH)) + 17,
         ]
     )
-    logger.info("NexusDownloadFlow-2026 starting...")
+    logger.info("NexusDownloadFlow starting...")
     logger.info(f"┏{sep}┓")
     logger.info(
         f"┃Config path: {CONFIG_PATH}{' ' * (len(sep) - len(str(CONFIG_PATH)) - 13)}┃"

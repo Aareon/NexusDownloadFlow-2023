@@ -1,17 +1,17 @@
-# NexusDownloadFlow-2026: Auto-clicker script using computer vision
+# NexusDownloadFlow: Auto-clicker script using computer vision
 
 ![Python](https://img.shields.io/badge/python-3.14-blue)
 ![uv](https://img.shields.io/badge/uv-managed-4B8BBE)
 [![Ruff Lint Workflow](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/ruff-lint.yaml/badge.svg)](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/ruff-lint.yaml)
 [![Packaging Workflow](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/pyinstaller-windows.yaml/badge.svg)](https://github.com/Aareon/NexusDownloadFlow/actions/workflows/pyinstaller-windows.yaml)
 
-NexusDownloadFlow-2026 (NDF) is a script that takes screenshots and detects if any template matches with the
+NexusDownloadFlow (NDF) is a script that takes screenshots and detects if any template matches with the
 screenshot taken. It was made to automate process with `Wabbajack modlist installation of Nexus' mods` in which
 you have to manually click on `Slow download` button is your NexusMods account is not premium.
 
-## How to use NexusDownloadFlow-2026?
+## How to use NexusDownloadFlow?
 
-Just execute `NexusDownloadFlow-2026.exe` and open your NexusMods' download page.
+Just execute `NexusDownloadFlow.exe` and open your NexusMods' download page.
 
 ## Configuration
 
@@ -20,7 +20,7 @@ The default delay for checking for the download button is 5 seconds. This value 
 ## Auto-clicker is not clicking
 
 Do not worry, you have to replace the templates files where you installed NDF with the one you will screenshot:
-`NexusDownloadFlow-2026/assets/template{x}.png`
+`NexusDownloadFlow/assets/template{x}.png`
 
 + `template1.png` is the raw `Slow download` button
 + `template2.png` is the `Slow download` button with mouse hovering over
