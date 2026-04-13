@@ -4,7 +4,9 @@ import os
 
 
 block_cipher = None
-spec_dir = os.path.abspath(os.getcwd())
+# SPECPATH is provided by PyInstaller and points to this spec file's directory.
+spec_dir = os.path.abspath(globals().get('SPECPATH', os.getcwd()))
+main_script = os.path.join(spec_dir, 'src', 'main.py')
 assets_src = os.path.join(spec_dir, 'assets')
 datas = []
 if os.path.isdir(assets_src):
@@ -12,7 +14,7 @@ if os.path.isdir(assets_src):
 
 
 a = Analysis(
-    ['src/main.py'],
+    [main_script],
     pathex=[spec_dir],
     binaries=[],
     datas=datas,
