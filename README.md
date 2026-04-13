@@ -2,8 +2,8 @@
 
 ![Python](https://img.shields.io/badge/python-3.14-blue)
 ![uv](https://img.shields.io/badge/uv-managed-4B8BBE)
-![Ruff Lint Workflow](https://github.com/Aareon/NexusDownloadFlow-2023/actions/workflows/ruff-lint.yaml/badge.svg)
-![Packaging Workflow](https://github.com/Aareon/NexusDownloadFlow-2023/actions/workflows/pyinstaller-windows.yaml/badge.svg)
+[![Ruff Lint Workflow](https://github.com/Aareon/NexusDownloadFlow-2023/actions/workflows/ruff-lint.yaml/badge.svg)](https://github.com/Aareon/NexusDownloadFlow-2023/actions/workflows/ruff-lint.yaml)
+[![Packaging Workflow](https://github.com/Aareon/NexusDownloadFlow-2023/actions/workflows/pyinstaller-windows.yaml/badge.svg)](https://github.com/Aareon/NexusDownloadFlow-2023/actions/workflows/pyinstaller-windows.yaml)
 
 NexusDownloadFlow-2026 (NDF) is a script that takes screenshots and detects if any template matches with the
 screenshot taken. It was made to automate process with `Wabbajack modlist installation of Nexus' mods` in which
