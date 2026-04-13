@@ -21,7 +21,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        uv sync --extra dev
+        uv lock --check
+        uv sync --locked --extra dev
 
     - name: Lint
       run: uv run ruff check .

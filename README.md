@@ -39,8 +39,11 @@ Please send a :star: over to the awesome repos above!
 Install dependencies and developer tools:
 
 ```powershell
-uv sync --extra dev
+uv lock
+uv sync --locked --extra dev
 ```
+
+When dependencies change in `pyproject.toml`, regenerate and commit `uv.lock`.
 
 Run lint checks:
 
