@@ -4,10 +4,11 @@ on:
   push:
     tags:
       - "v*"
+      - "[0-9]*"
   workflow_dispatch:
     inputs:
       tag_name:
-        description: "Release tag (for example: v1.0.0)"
+        description: "Release tag (for example: v1.0.0 or 1.0.0)"
         required: true
         type: string
       release_name:
@@ -22,6 +23,9 @@ on:
 
 permissions:
   contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   release:
