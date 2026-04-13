@@ -18,6 +18,12 @@ Run lint checks before opening a PR:
 uv run --python 3.14 ruff check src
 ```
 
+Install pre-commit hooks to enforce lockfile checks on every commit:
+
+```powershell
+uv run --python 3.14 pre-commit install
+```
+
 ## Build locally
 
 ```powershell
