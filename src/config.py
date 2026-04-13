@@ -1,10 +1,11 @@
 """Configuration loading and management for NexusDownloadFlow."""
 
+import re
 from pathlib import Path
 
 import toml
 from loguru import logger
-from pydantic import BaseModel, ConfigDict, Field, ValidationError
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 
 class AppConfig(BaseModel):
@@ -17,6 +18,22 @@ class AppConfig(BaseModel):
     debug: bool = False
     prevent_sleep: bool = True
     stop_after: str = "1h"
+
+    @field_validator("stop_after")
+    @classmethod
+    def validate_stop_after(cls, value: str) -> str:
+        """Validate stop_after supports disabled mode or duration syntax.
+
+        Accepted values:
+        - "0" to disable auto-stop
+        - "<int>m" for minutes (for example: "12m")
+        - "<int>h" for hours (for example: "1h")
+        """
+        if value == "0":
+            return value
+        if re.fullmatch(r"\d+[mh]", value):
+            return value
+        raise ValueError("stop_after must be '0' or a duration like '12m' or '1h'")
 
 
 def validate_config(raw_config: dict, default_config: str) -> AppConfig:

@@ -1,5 +1,6 @@
 """Auto-clicker automation for NexusDownloadFlow."""
 
+import ctypes
 import time
 from pathlib import Path
 from typing import Any
@@ -14,6 +15,9 @@ from src.config import AppConfig
 
 TEMPLATE_NAMES = ("template1.png", "template2.png", "template3.png")
 MATCH_THRESHOLD = 3000
+ES_CONTINUOUS = 0x80000000
+ES_SYSTEM_REQUIRED = 0x00000001
+ES_DISPLAY_REQUIRED = 0x00000002
 
 
 def load_template_images(real_assets_path: Path) -> list[NDArray[Any]]:
@@ -92,6 +96,35 @@ def resolve_check_delay(conf: AppConfig) -> float:
     return conf.check_delay
 
 
+def parse_stop_after_seconds(stop_after: str) -> float | None:
+    """Convert stop_after config value into seconds.
+
+    Returns None when auto-stop is disabled.
+    """
+    if stop_after == "0":
+        return None
+    unit = stop_after[-1]
+    amount = int(stop_after[:-1])
+    if unit == "m":
+        return float(amount * 60)
+    return float(amount * 3600)
+
+
+def set_sleep_prevention(enabled: bool) -> None:
+    """Enable/disable Windows sleep prevention for the current process."""
+    if not hasattr(ctypes, "windll"):
+        return
+
+    if enabled:
+        flags = ES_CONTINUOUS | ES_SYSTEM_REQUIRED | ES_DISPLAY_REQUIRED
+    else:
+        flags = ES_CONTINUOUS
+
+    result = ctypes.windll.kernel32.SetThreadExecutionState(flags)
+    if result == 0:
+        logger.warning("SetThreadExecutionState failed (enabled={})", enabled)
+
+
 def run_autoclicker(
     conf: AppConfig,
     real_assets_path: Path,
@@ -114,19 +147,36 @@ def run_autoclicker(
         KeyboardInterrupt: When user exits with Ctrl+C.
     """
     templates = load_template_images(real_assets_path)
+    stop_after_seconds = parse_stop_after_seconds(conf.stop_after)
+    start_time = time.monotonic()
+    set_sleep_prevention(conf.prevent_sleep)
+    if conf.prevent_sleep:
+        logger.info("Sleep prevention is enabled.")
+    if stop_after_seconds is not None:
+        logger.info("Auto-stop is enabled after {} second(s).", int(stop_after_seconds))
 
-    with mss() as sct:
-        match_count = 0
-        while True:
-            logger.debug("Starting matching iteration")
-            screenshot_gray = take_screenshot_gray(sct, screenshot_path)
-            for template_gray in templates:
-                target = find_template_target(screenshot_gray, template_gray)
-                if target is not None:
-                    match_count += 1
-                    if cli_mode:
-                        logger.info("Download button found (match #{})", match_count)
-                    click_and_restore_cursor(target)
-                    break
-            cleanup_screenshot(screenshot_path)
-            time.sleep(resolve_check_delay(conf))
+    try:
+        with mss() as sct:
+            match_count = 0
+            while True:
+                if stop_after_seconds is not None:
+                    elapsed = time.monotonic() - start_time
+                    if elapsed >= stop_after_seconds:
+                        logger.info("Stopping auto-clicker after configured stop_after={}", conf.stop_after)
+                        break
+
+                logger.debug("Starting matching iteration")
+                screenshot_gray = take_screenshot_gray(sct, screenshot_path)
+                for template_gray in templates:
+                    target = find_template_target(screenshot_gray, template_gray)
+                    if target is not None:
+                        match_count += 1
+                        if cli_mode:
+                            logger.info("Download button found (match #{})", match_count)
+                        click_and_restore_cursor(target)
+                        break
+                cleanup_screenshot(screenshot_path)
+                time.sleep(resolve_check_delay(conf))
+    finally:
+        if conf.prevent_sleep:
+            set_sleep_prevention(False)
