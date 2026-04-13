@@ -1,0 +1,80 @@
+name: Create GitHub Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Release tag (for example: v1.0.0)"
+        required: true
+        type: string
+      release_name:
+        description: "Optional release title"
+        required: false
+        type: string
+      prerelease:
+        description: "Mark as prerelease"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure tag exists for manual dispatch
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: |
+          $tag = "${{ inputs.tag_name }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if (-not (git rev-parse "$tag" 2>$null)) {
+            git tag "$tag"
+            git push origin "$tag"
+          }
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.14"
+
+      - name: Install dependencies
+        run: |
+          uv lock --check
+          uv sync --locked --extra dev --python 3.14
+
+      - name: Lint
+        run: uv run --python 3.14 ruff check src
+
+      - name: Build executable
+        run: uv run --python 3.14 pyinstaller build.spec --noconfirm --clean
+
+      - name: Generate checksums
+        shell: pwsh
+        run: |
+          Get-FileHash dist\*.exe -Algorithm SHA256 |
+          ForEach-Object { "{0}  {1}" -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) } |
+          Set-Content dist\SHA256SUMS.txt
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag_name || github.ref_name }}
+          name: ${{ inputs.release_name || format('Release {0}', github.event_name == 'workflow_dispatch' && inputs.tag_name || github.ref_name) }}
+          files: |
+            dist/*.exe
+            dist/SHA256SUMS.txt
+          prerelease: ${{ inputs.prerelease || false }}
+          generate_release_notes: true
