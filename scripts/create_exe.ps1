@@ -5,8 +5,12 @@ $specFilePath = Resolve-Path -Path (Join-Path -Path $scriptPath -ChildPath "../b
 
 Write-Host "Spec path: $specFilePath"
 
-# Define the name of the output directory (modify as needed)
-$outputDir = Resolve-Path -Path (Join-Path -Path $scriptPath -ChildPath "../dist")
+# Define/create the output directory, then resolve it
+$outputDirRaw = Join-Path -Path $scriptPath -ChildPath "../dist"
+if (-not (Test-Path -Path $outputDirRaw)) {
+	New-Item -ItemType Directory -Path $outputDirRaw | Out-Null
+}
+$outputDir = Resolve-Path -Path $outputDirRaw
 
 Write-Host "Output path: $outputDir"
 
