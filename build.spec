@@ -30,7 +30,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='NexusDownloadFlow-2023',
+    name='NexusDownloadFlow-2026-v1.0',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
