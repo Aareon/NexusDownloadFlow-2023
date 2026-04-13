@@ -8,6 +8,7 @@ dependencies = [
     "loguru>=0.7.3",
     "mss==6.1.0",
     "opencv-python>=4.12",
+    "pydantic>=2.11.0",
     "pyautogui==0.9.54",
     "toml==0.10.2",
 ]

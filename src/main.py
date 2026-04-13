@@ -1,3 +1,5 @@
+"""Application entrypoint for NexusDownloadFlow-2026."""
+
 import sys
 import time
 
@@ -15,7 +17,9 @@ from src.definitions import (
 )
 from src.logging_config import configure_logging
 
-if __name__ == "__main__":
+
+def main() -> None:
+    """Initialize runtime resources and start the auto-clicker loop."""
     configure_logging()
     sep = "━" * max(
         [
@@ -42,7 +46,7 @@ if __name__ == "__main__":
         "Do not forget to replace the assets templates (1, 2 & 3) "
         "in order to match with the screenshots taken from your monitor!"
     )
-    logger.info("Delay is set to {} second(s)", CONF["check_delay"])
+    logger.info("Delay is set to {} second(s)", CONF.check_delay)
     try:
         run_autoclicker(CONF, REAL_ASSETS_PATH, SCREENSHOT_PATH)
     except (SystemExit, KeyboardInterrupt):
@@ -65,3 +69,7 @@ if __name__ == "__main__":
             logger.warning("The screenshot does not exist")
         logger.info("Done")
         sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
