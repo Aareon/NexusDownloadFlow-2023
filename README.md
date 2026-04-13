@@ -39,8 +39,9 @@ Please send a :star: over to the awesome repos above!
 Install dependencies and developer tools:
 
 ```powershell
+uv python install 3.14
 uv lock
-uv sync --locked --extra dev
+uv sync --locked --extra dev --python 3.14
 ```
 
 When dependencies change in `pyproject.toml`, regenerate and commit `uv.lock`.

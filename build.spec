@@ -1,16 +1,21 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
+
 
 block_cipher = None
+spec_dir = os.path.abspath(os.getcwd())
+assets_src = os.path.join(spec_dir, 'assets')
+datas = []
+if os.path.isdir(assets_src):
+    datas.append((assets_src, './assets'))
 
 
 a = Analysis(
     ['src/main.py'],
-    pathex=[],
+    pathex=[spec_dir],
     binaries=[],
-    datas=[
-        ('./assets', './assets'),
-    ],
+    datas=datas,
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

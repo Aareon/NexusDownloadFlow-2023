@@ -3,10 +3,10 @@ name = "nexusdownloadflow-2023"
 version = "0.1.0"
 description = "Auto-clicker for Nexus download flow using computer vision"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.14,<3.15"
 dependencies = [
     "mss==6.1.0",
-    "opencv-python==4.5.5.64",
+    "opencv-python>=4.12",
     "pyautogui==0.9.54",
     "toml==0.10.2",
 ]
@@ -19,7 +19,7 @@ dev = [
 
 [tool.ruff]
 line-length = 120
-target-version = "py311"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP"]

@@ -17,18 +17,18 @@ jobs:
     - name: Set up uv
       uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.11'
+        python-version: '3.14'
 
     - name: Install dependencies
       run: |
         uv lock --check
-        uv sync --locked --extra dev
+        uv sync --locked --extra dev --python 3.14
 
     - name: Lint
-      run: uv run ruff check .
+      run: uv run --python 3.14 ruff check .
 
     - name: Build executable
-      run: uv run pyinstaller build.spec --noconfirm
+      run: uv run --python 3.14 pyinstaller build.spec --noconfirm
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
