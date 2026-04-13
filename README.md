@@ -31,16 +31,27 @@ Please send a :star: over to the awesome repos above!
 
 ## Requirements
 
-+ `PyAutoGUI==0.9.54` (mouse automation)
-+ `opencv-python==4.5.5.64` (image detection)
-+ `mss==6.1.0` (screenshot)
-+ `toml==0.10.2` (config language)
-+ `pyinstaller` (EXE creator) (dev only)
++ `uv` (Python project/dependency manager)
++ `ruff` (linter/formatter, installed through `uv`)
+
+## Development setup
+
+Install dependencies and developer tools:
+
+```powershell
+uv sync --extra dev
+```
+
+Run lint checks:
+
+```powershell
+uv run ruff check .
+```
 
 ## Contributing
 
-Contributors are encouraged to help improve the code. If you find a bug, please feel free to create an issue and assign yourself if you can. When you fix the bug, please run Black (code formatter) and Flake8 (Linter) to ensure your code matches the style of the rest of the repository. When finished, please submit a PR.
+Contributors are encouraged to help improve the code. If you find a bug, please feel free to create an issue and assign yourself if you can. When you fix the bug, please run Ruff (linter) to ensure your code matches the style of the rest of the repository. When finished, please submit a PR.
 
 ## Compiling to an EXE
 
-If you would like to compile the program yourself, you are encouraged to do so. You will find running `scripts/create_exe.ps1` will utilize the `NexusDownloadFlow-2023.spec` file to compile an executable binary. This is the script we use to generate a new release. Using the `create_exe.ps1` script requires that you have `pyinstaller` installed and available in your `$PATH`.
+If you would like to compile the program yourself, you are encouraged to do so. You will find running `scripts/create_exe.ps1` will utilize `build.spec` to compile an executable binary. This is the script we use to generate a new release. Using `create_exe.ps1` requires `uv`.
