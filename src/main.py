@@ -20,7 +20,7 @@ from definitions import (
 def load_config(config_path: Path, default_config: str) -> dict:
     if not config_path.exists():
         print(f"Config not found, creating {CONFIG_PATH}")
-        config_path.parent.mkdir(parents=True)
+        config_path.parent.mkdir(parents=True, exist_ok=True)
         try:
             with open(config_path, "w") as f:
                 f.write(default_config)
@@ -37,7 +37,7 @@ def load_config(config_path: Path, default_config: str) -> dict:
                 f"An error occurred reading config file: {e}"
                 "Using default configuration."
             )
-            return default_config
+            return toml.loads(default_config)
 
 
 def load_assets():
@@ -59,17 +59,16 @@ def load_assets():
 
 def run_autoclicker(cli_mode=True):
     # load templates and create grayscale image for each
-    templates = [
-        cv2.cvtColor(
-            cv2.imread(str(REAL_ASSETS_PATH / "template1.png")), cv2.COLOR_BGR2GRAY
-        ),
-        cv2.cvtColor(
-            cv2.imread(str(REAL_ASSETS_PATH / "template2.png")), cv2.COLOR_BGR2GRAY
-        ),
-        cv2.cvtColor(
-            cv2.imread(str(REAL_ASSETS_PATH / "template3.png")), cv2.COLOR_BGR2GRAY
-        ),
-    ]
+    templates = []
+    for template_name in ("template1.png", "template2.png", "template3.png"):
+        template_path = REAL_ASSETS_PATH / template_name
+        template_img = cv2.imread(str(template_path))
+        if template_img is None:
+            raise FileNotFoundError(
+                f"Template could not be loaded: {template_path}. "
+                "Ensure template files exist and are valid PNG images."
+            )
+        templates.append(cv2.cvtColor(template_img, cv2.COLOR_BGR2GRAY))
     with mss() as sct:
         match_count = 0  # counter for template matches
         while True:
@@ -101,7 +100,11 @@ def run_autoclicker(cli_mode=True):
                     break
             if SCREENSHOT_PATH.exists():
                 SCREENSHOT_PATH.unlink()  # delete screenshot image from filesystem
-            time.sleep(CONF["check_delay"])
+            try:
+                check_delay = max(float(CONF.get("check_delay", 5)), 0.1)
+            except (TypeError, ValueError):
+                check_delay = 5.0
+            time.sleep(check_delay)
 
 
 if __name__ == "__main__":
@@ -135,7 +138,7 @@ if __name__ == "__main__":
         run_autoclicker()
     except (SystemExit, KeyboardInterrupt):
         print("\nExiting the program...")
-    except (PermissionError, WindowsError):
+    except (PermissionError, OSError):
         print(
             "\nCould not create/delete 'monitor-1.png' due to a permission error. "
             "This can happen when your computer goes to sleep, "
