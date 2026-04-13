@@ -4,5 +4,4 @@
 ~~- Add docstrings~~
 ~~- Add CHANGELOG and CONTRIBUTING files~~
 ~~- Add config validation~~
-
-- Add verbose/debug modes
+~~- Add verbose/debug modes~~
