@@ -10,7 +10,6 @@ a = Analysis(
     binaries=[],
     datas=[
         ('./assets', './assets'),
-        ('./config', './config')
     ],
     hiddenimports=[],
     hookspath=[],
