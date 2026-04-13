@@ -1,6 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 
 import os
+import tomllib
 
 
 block_cipher = None
@@ -8,6 +9,12 @@ block_cipher = None
 spec_dir = os.path.abspath(globals().get('SPECPATH', os.getcwd()))
 main_script = os.path.join(spec_dir, 'src', 'main.py')
 assets_src = os.path.join(spec_dir, 'assets')
+pyproject_path = os.path.join(spec_dir, 'pyproject.toml')
+with open(pyproject_path, 'rb') as f:
+    pyproject_data = tomllib.load(f)
+project_version = pyproject_data['project']['version']
+
+exe_name = f"NexusDownloadFlow-v{project_version}"
 datas = []
 if os.path.isdir(assets_src):
     datas.append((assets_src, './assets'))
@@ -37,7 +44,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='NexusDownloadFlow-v1.1.2',
+    name=exe_name,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

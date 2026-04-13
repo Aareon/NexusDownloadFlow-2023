@@ -6,6 +6,7 @@ Runs lock, lint, tests, and packaging in sequence using uv.
 from __future__ import annotations
 
 import subprocess
+import tomllib
 from pathlib import Path
 
 PYTHON_VERSION = "3.14"
@@ -21,6 +22,12 @@ def run_step(label: str, command: list[str], cwd: Path) -> None:
 def main() -> int:
     """Execute the full build pipeline."""
     project_root = Path(__file__).resolve().parent
+    pyproject_path = project_root / "pyproject.toml"
+    with pyproject_path.open("rb") as f:
+        pyproject_data = tomllib.load(f)
+    project_version = pyproject_data["project"]["version"]
+
+    print(f"Building NexusDownloadFlow version {project_version}")
 
     steps = [
         ("Lock dependencies", ["uv", "lock"]),
