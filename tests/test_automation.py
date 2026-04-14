@@ -93,3 +93,35 @@ def test_run_autoclicker_honors_stop_after_and_restores_sleep_state(monkeypatch,
     automation.run_autoclicker(conf, tmp_path, screenshot_path, cli_mode=False)
 
     assert calls == [True, False]
+
+
+def test_set_sleep_prevention_noop_without_windll(monkeypatch) -> None:
+    monkeypatch.delattr(automation.ctypes, "windll", raising=False)
+
+    automation.set_sleep_prevention(True)
+    automation.set_sleep_prevention(False)
+
+
+def test_run_autoclicker_cleans_screenshot_on_exception(monkeypatch, tmp_path: Path) -> None:
+    conf = AppConfig(check_delay=1.0, prevent_sleep=False, stop_after="0")
+    screenshot_path = tmp_path / "monitor-1.png"
+
+    class DummyMss:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+    def fake_take_screenshot_gray(_sct, screenshot_target: Path):
+        screenshot_target.write_text("temp", encoding="utf-8")
+        raise RuntimeError("capture failed")
+
+    monkeypatch.setattr(automation, "load_template_images", lambda _: [])
+    monkeypatch.setattr(automation, "mss", lambda: DummyMss())
+    monkeypatch.setattr(automation, "take_screenshot_gray", fake_take_screenshot_gray)
+
+    with pytest.raises(RuntimeError):
+        automation.run_autoclicker(conf, tmp_path, screenshot_path, cli_mode=False)
+
+    assert not screenshot_path.exists()

@@ -122,7 +122,12 @@ def set_sleep_prevention(enabled: bool) -> None:
     else:
         flags = ES_CONTINUOUS
 
-    result = ctypes.windll.kernel32.SetThreadExecutionState(flags)
+    try:
+        result = ctypes.windll.kernel32.SetThreadExecutionState(flags)
+    except Exception as e:
+        logger.warning("SetThreadExecutionState raised exception (enabled={}): {}", enabled, e)
+        return
+
     if result == 0:
         logger.warning("SetThreadExecutionState failed (enabled={})", enabled)
 
@@ -180,5 +185,6 @@ def run_autoclicker(
                 cleanup_screenshot(screenshot_path)
                 time.sleep(resolve_check_delay(conf))
     finally:
+        cleanup_screenshot(screenshot_path)
         if conf.prevent_sleep:
             set_sleep_prevention(False)
