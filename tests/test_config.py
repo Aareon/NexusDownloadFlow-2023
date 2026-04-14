@@ -1,5 +1,8 @@
 from pathlib import Path
 
+import pytest
+from pydantic import ValidationError
+
 from src.config import AppConfig, load_config
 
 
@@ -14,11 +17,8 @@ def test_app_config_accepts_valid_stop_after_values() -> None:
 
 
 def test_app_config_rejects_invalid_stop_after_values() -> None:
-    try:
+    with pytest.raises(ValidationError):
         AppConfig.model_validate({"stop_after": "abc"})
-        assert False, "Expected validation error for invalid stop_after"
-    except Exception:
-        assert True
 
 
 def test_load_config_falls_back_to_defaults_on_invalid_file(tmp_path: Path) -> None:

@@ -2,6 +2,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
+import pytest
 
 import src.automation as automation
 from src.automation import cleanup_screenshot, parse_stop_after_seconds
@@ -65,11 +66,8 @@ def test_load_template_images_raises_for_missing_template(tmp_path: Path) -> Non
         cv2.imwrite(str(assets_path / "template1.png"), np.zeros((5, 5, 3), dtype=np.uint8))
         cv2.imwrite(str(assets_path / "template2.png"), np.zeros((5, 5, 3), dtype=np.uint8))
 
-    try:
+    with pytest.raises(FileNotFoundError):
         automation.load_template_images(assets_path)
-        assert False, "Expected FileNotFoundError for missing template3.png"
-    except FileNotFoundError:
-        assert True
 
 
 def test_run_autoclicker_honors_stop_after_and_restores_sleep_state(monkeypatch, tmp_path: Path) -> None:

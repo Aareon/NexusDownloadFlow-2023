@@ -63,10 +63,17 @@ def test_load_assets_handles_internal_exception(monkeypatch, tmp_path: Path) -> 
     source_assets = tmp_path / "source"
     real_assets = tmp_path / "real"
 
+    original_mkdir = Path.mkdir
+
     def raise_mkdir(*args, **kwargs):
-        raise OSError("mkdir failed")
+        current_path = args[0]
+        if current_path == real_assets:
+            raise OSError("mkdir failed")
+        return original_mkdir(*args, **kwargs)
 
     monkeypatch.setattr(assets_module.Path, "mkdir", raise_mkdir)
 
     # Function should swallow internal errors and not raise.
     load_assets(source_assets, real_assets)
+
+    assert not real_assets.exists()
