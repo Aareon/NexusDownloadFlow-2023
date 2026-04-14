@@ -2,7 +2,6 @@ from pathlib import Path
 
 from src.assets import load_assets
 
-
 TEMPLATES = ("template1.png", "template2.png", "template3.png")
 
 
