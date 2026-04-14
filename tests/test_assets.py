@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import src.assets as assets_module
 from src.assets import load_assets
 
 TEMPLATES = ("template1.png", "template2.png", "template3.png")
@@ -42,3 +43,30 @@ def test_load_assets_handles_missing_bundled_assets(tmp_path: Path) -> None:
     assert real_assets.exists()
     for template_name in TEMPLATES:
         assert not (real_assets / template_name).exists()
+
+
+def test_load_assets_warns_when_some_templates_still_missing(tmp_path: Path) -> None:
+    source_assets = tmp_path / "source"
+    real_assets = tmp_path / "real"
+
+    source_assets.mkdir(parents=True, exist_ok=True)
+    (source_assets / "template1.png").write_text("x", encoding="utf-8")
+
+    load_assets(source_assets, real_assets)
+
+    assert (real_assets / "template1.png").exists()
+    assert not (real_assets / "template2.png").exists()
+    assert not (real_assets / "template3.png").exists()
+
+
+def test_load_assets_handles_internal_exception(monkeypatch, tmp_path: Path) -> None:
+    source_assets = tmp_path / "source"
+    real_assets = tmp_path / "real"
+
+    def raise_mkdir(*args, **kwargs):
+        raise OSError("mkdir failed")
+
+    monkeypatch.setattr(assets_module.Path, "mkdir", raise_mkdir)
+
+    # Function should swallow internal errors and not raise.
+    load_assets(source_assets, real_assets)
